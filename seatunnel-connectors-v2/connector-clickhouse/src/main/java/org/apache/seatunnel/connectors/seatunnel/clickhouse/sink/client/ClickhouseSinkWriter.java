@@ -156,6 +156,7 @@ public class ClickhouseSinkWriter
                                                     .map(key -> StringUtils.trim(key))
                                                     .toArray(value -> new String[value]);
                                 }
+                                log.info(option.getTableSchema().toString());
                                 JdbcBatchStatementExecutor jdbcBatchStatementExecutor =
                                         new JdbcBatchStatementExecutorBuilder()
                                                 .setTable(shardRouter.getShardTable())

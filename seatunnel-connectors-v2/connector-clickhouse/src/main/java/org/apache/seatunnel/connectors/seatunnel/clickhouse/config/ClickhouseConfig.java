@@ -39,7 +39,11 @@ public class ClickhouseConfig {
                     .stringType()
                     .noDefaultValue()
                     .withDescription("Clickhouse sql used to query data");
-
+    public static final Option<List<String>> SINK_COLUMNS =
+            Options.key("sink_columns")
+                    .listType()
+                    .noDefaultValue()
+                    .withDescription("Which columns need be wrote to file");
     /** Clickhouse server host */
     public static final Option<String> HOST =
             Options.key("host")

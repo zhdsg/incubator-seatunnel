@@ -35,7 +35,7 @@ import static org.apache.seatunnel.connectors.seatunnel.clickhouse.config.Clickh
 import static org.apache.seatunnel.connectors.seatunnel.clickhouse.config.ClickhouseConfig.SUPPORT_UPSERT;
 import static org.apache.seatunnel.connectors.seatunnel.clickhouse.config.ClickhouseConfig.TABLE;
 import static org.apache.seatunnel.connectors.seatunnel.clickhouse.config.ClickhouseConfig.USERNAME;
-
+import static org.apache.seatunnel.connectors.seatunnel.clickhouse.config.ClickhouseConfig.SINK_COLUMNS;
 @AutoService(Factory.class)
 public class ClickhouseSinkFactory implements TableSinkFactory {
     @Override
@@ -55,6 +55,7 @@ public class ClickhouseSinkFactory implements TableSinkFactory {
                         PRIMARY_KEY,
                         SUPPORT_UPSERT,
                         ALLOW_EXPERIMENTAL_LIGHTWEIGHT_DELETE)
+                .optional(SINK_COLUMNS)
                 .bundled(USERNAME, PASSWORD)
                 .build();
     }

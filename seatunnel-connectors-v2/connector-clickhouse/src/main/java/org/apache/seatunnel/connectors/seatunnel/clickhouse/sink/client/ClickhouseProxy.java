@@ -33,11 +33,7 @@ import com.clickhouse.client.ClickHouseRecord;
 import com.clickhouse.client.ClickHouseRequest;
 import com.clickhouse.client.ClickHouseResponse;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -122,6 +118,36 @@ public class ClickhouseProxy {
         }
     }
 
+    /**
+     *
+     * @param table table name.
+     * @param sinkColumns config for SINK_COLUMS
+     * @return
+     */
+    public Map<String, String> getClickhouseTableSchema4SinkColums(String table,List<String> sinkColumns) {
+        ClickHouseRequest<?> request = getClickhouseConnection();
+        return getClickhouseTableSchema(request, table,sinkColumns);
+    }
+    public Map<String, String> getClickhouseTableSchema(
+            ClickHouseRequest<?> request, String table,List<String> sinkColumns) {
+        String sql = "desc " + table;
+        Map<String, String> schema = new LinkedHashMap<>();
+        try (ClickHouseResponse response = request.query(sql).executeAndWait()) {
+            response.records()
+                    .forEach(r -> {
+                        String column = r.getValue(0).asString();
+                        if(sinkColumns.contains(column)){
+                            schema.put(column, r.getValue(1).asString());
+                        }
+                    });
+        } catch (ClickHouseException e) {
+            throw new ClickhouseConnectorException(
+                    CommonErrorCode.TABLE_SCHEMA_GET_FAILED,
+                    "Cannot get table schema from clickhouse",
+                    e);
+        }
+        return schema;
+    }
     /**
      * Get ClickHouse table schema, the key is fileName, value is value type.
      *
