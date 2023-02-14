@@ -240,7 +240,23 @@ public class ClickhouseSink
 
     @Override
     public void setTypeInfo(SeaTunnelRowType seaTunnelRowType) {
-        this.option.setSeaTunnelRowType(seaTunnelRowType);
+
+        Map<String, String> tableSchema = option.getTableSchema();
+        String[] newFieldNames =new String[tableSchema.size()];
+        SeaTunnelDataType<?>[] newFieldTypes = new  SeaTunnelDataType<?>[tableSchema.size()];
+        String[] fieldNames = seaTunnelRowType.getFieldNames();
+        SeaTunnelDataType<?>[] fieldTypes = seaTunnelRowType.getFieldTypes();
+        for (int i =0 ,j=0;i <fieldNames.length;i++){
+            if(tableSchema.keySet().contains(fieldNames[i])){
+                newFieldNames[j]=fieldNames[i];
+                newFieldTypes[j]=fieldTypes[j];
+                j++;
+            }
+        }
+
+        this.option.setSeaTunnelRowType(
+                new SeaTunnelRowType(newFieldNames,newFieldTypes)
+        );
     }
 
     @Override
