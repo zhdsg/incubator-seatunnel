@@ -18,6 +18,7 @@
 package org.apache.seatunnel.connectors.seatunnel.clickhouse.sink.client.executor;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -48,7 +49,7 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-
+@Slf4j
 @RequiredArgsConstructor
 public class FieldNamedPreparedStatement implements PreparedStatement {
     private final PreparedStatement statement;
@@ -643,6 +644,8 @@ public class FieldNamedPreparedStatement implements PreparedStatement {
                 indexMapping[i] = parameterMap.get(fieldName).stream().mapToInt(v -> v).toArray();
             }
         }
+
+        log.info("parsedSQL:"+parsedSQL);
         return new FieldNamedPreparedStatement(
                 connection.prepareStatement(parsedSQL), indexMapping);
     }
